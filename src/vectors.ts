@@ -16,5 +16,6 @@ const pitchDistance = (vectors: tf.Tensor): tf.Tensor => {
 }
 
 export {
+    PRIMES,
     pitchDistance
 }
