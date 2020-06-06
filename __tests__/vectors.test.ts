@@ -1,3 +1,4 @@
+import { tensorsAlmostEqual } from "./test_utils"
 import { pitchDistance } from "../src/vectors"
 import * as tf from "@tensorflow/tfjs-node-gpu"
 
@@ -10,8 +11,7 @@ test('pitchDistance for one vec', () => {
 
 test('pitchDistance for multiple vecs', () => {
     const v = tf.tensor([[-1, 1, 0], [-2, 0, 1]])
-    const exp = [0.5850, 0.3219]
+    const exp = tf.tensor([0.5849625, 0.3219281])
     const res = pitchDistance(v)
-    expect(res.arraySync()[0]).toBeCloseTo(exp[0])
-    expect(res.arraySync()[1]).toBeCloseTo(exp[1])
+    expect(tensorsAlmostEqual(res, exp)).toBe(true)
 })
