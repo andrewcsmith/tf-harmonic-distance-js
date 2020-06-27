@@ -5,6 +5,7 @@
     },
     "files": [
         "index.ts",
+        "src/cartesian.ts",
         "src/tenney.ts",
         "src/utilities.ts",
         "src/vectors.ts"

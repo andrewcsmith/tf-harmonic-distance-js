@@ -1,0 +1,17 @@
+import * as tf from "@tensorflow/tfjs-node-gpu"
+import { tensorsAlmostEqual } from "./test_utils"
+
+import { 
+    permutations
+} from "../src/cartesian"
+
+test('permutations', async () => {
+    const exp = tf.tensor([
+        [[0], [0]],
+        [[1], [0]],
+        [[0], [1]],
+        [[1], [1]]
+    ])
+    const res = permutations(tf.tensor([[0], [1]]))
+    expect(tensorsAlmostEqual(res, exp)).toBe(true)
+})
