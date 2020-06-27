@@ -27,5 +27,8 @@
   },
   "resolutions": {
     "@types/webgl2": "0.0.5"
+  },
+  "scripts": {
+    "test": "jest"
   }
 }
