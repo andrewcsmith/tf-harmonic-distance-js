@@ -5,6 +5,7 @@
     },
     "files": [
         "index.ts",
+        "src/tenney.ts",
         "src/utilities.ts",
         "src/vectors.ts"
     ]
