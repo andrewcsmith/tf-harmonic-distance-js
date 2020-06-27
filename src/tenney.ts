@@ -13,7 +13,7 @@ const harmonicDistance = (vecs: tf.Tensor): tf.Tensor => {
 }
 
 const harmonicDistanceAggregate = async (vecs: tf.Tensor): Promise<tf.Tensor> => {
-    const bases = await getBases(vecs.shape[1] + 1)
+    const bases = await getBases(vecs.shape[0] + 1)
     return explodedHarmonicDistance(vecs)
         .transpose()
         .dot(bases)
