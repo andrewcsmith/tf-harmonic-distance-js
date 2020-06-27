@@ -15,7 +15,7 @@ const UNISON_FIFTH = tf.tensor([
     [-1, 1, 0]
 ])
 
-async function expectInRange(res, exp, range = 1.0e-5) {
+async function expectInRange(res: tf.Tensor, exp: tf.Tensor, range = 1.0e-5) {
     expect(await res.sub(exp).sum().array()).toBeLessThan(range)
 }
 
@@ -33,12 +33,12 @@ test('harmonicDistance of multiple intervals', async () => {
 
 test('harmonicDistance aggregate of UNISON_FIFTH', async () => {
     const exp = tf.tensor([2.584962500721156])
-    const res = harmonicDistanceAggregate(UNISON_FIFTH)
+    const res = await harmonicDistanceAggregate(UNISON_FIFTH)
     expectInRange(res, exp)
 })
 
 test('harmonicDistance aggregate of TRIAD', async () => {
     const exp = tf.tensor([5.9068906])
-    const res = harmonicDistanceAggregate(TRIAD)
+    const res = await harmonicDistanceAggregate(TRIAD)
     expectInRange(res, exp)
 })
