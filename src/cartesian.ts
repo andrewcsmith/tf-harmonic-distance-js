@@ -1,19 +1,32 @@
 import * as tf from "@tensorflow/tfjs-node-gpu"
 
-const selfMesh = (a: tf.Tensor): tf.Tensor[] => {
-    const l = a.shape[0]
-    const xx = tf.matMul(tf.ones([l, 1]), a.reshape([1, l]))
-    const yy = tf.matMul(a.reshape([l, 1]), tf.ones([1, l]))
-    return [xx, yy]
+const meshGrid = (xi: tf.Tensor[]): tf.Tensor[] => {
+    const ndim = xi.length
+    const finalShape = xi.map(x => x.shape[0])
+    const output = xi.map((x, i) => {
+        let newShape = []
+        for (let idx = 0; idx < ndim; idx++) {
+            if (idx == i) {
+                newShape.push(finalShape[i])
+            } else {
+                newShape.push(1)
+            }
+        }
+        return x.reshape(newShape).broadcastTo(finalShape)
+    })
+    return output
 }
 
 const permutations = (a: tf.Tensor, times = 2): tf.Tensor => {
     const options = tf.range(0, a.shape[0])
-    const meshed = selfMesh(options)
-    const indices = tf.stack(meshed, -1).reshape([-1, times]).cast("int32")
+    const meshed = meshGrid([options, options])
+    const indices = tf.stack(meshed, -1)
+        .reshape([-1, times])
+        .cast("int32")
     return tf.gather(a, indices)
 }
 
-export { 
+export {
+    meshGrid,
     permutations,
 }

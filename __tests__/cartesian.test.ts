@@ -8,8 +8,8 @@ import {
 test('permutations', async () => {
     const exp = tf.tensor([
         [[0], [0]],
-        [[1], [0]],
         [[0], [1]],
+        [[1], [0]],
         [[1], [1]]
     ])
     const res = permutations(tf.tensor([[0], [1]]))
