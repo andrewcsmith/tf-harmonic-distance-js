@@ -1,5 +1,5 @@
 import * as tf from "@tensorflow/tfjs-node-gpu"
-import { tensorsAlmostEqual } from "./test_utils"
+import { expectTensorsClose } from "./test_utils"
 
 import { 
     permutations

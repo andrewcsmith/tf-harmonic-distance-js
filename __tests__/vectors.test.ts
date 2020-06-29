@@ -7,7 +7,6 @@ import {
     spaceGraphAlteredPermutations,
     VectorSpace,
 } from "../src/vectors"
-import { tensor } from "@tensorflow/tfjs-node-gpu"
 
 describe('pitchDistance', () => {
     it('is correct for one vec', () => {
