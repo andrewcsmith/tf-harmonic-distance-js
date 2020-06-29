@@ -13,5 +13,5 @@ test('permutations', async () => {
         [[1], [1]]
     ])
     const res = permutations(tf.tensor([[0], [1]]))
-    expect(tensorsAlmostEqual(res, exp)).toBe(true)
+    await expectTensorsClose(res, exp)
 })

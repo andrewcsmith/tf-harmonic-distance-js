@@ -1,6 +1,5 @@
 import * as tf from "@tensorflow/tfjs-node-gpu"
-import { expectArraysEqual } from "@tensorflow/tfjs-core/src/test_util"
-import { tensorsAlmostEqual } from "./test_utils"
+import { expectTensorsClose } from "./test_utils"
 
 import { 
     pitchDistance, 
@@ -18,11 +17,11 @@ describe('pitchDistance', () => {
         expect(res.arraySync()[0]).toBeCloseTo(exp)
     })
     
-    test('is correct for multiple vecs', () => {
+    test('is correct for multiple vecs', async () => {
         const v = tf.tensor([[-1, 1, 0], [-2, 0, 1]])
         const exp = tf.tensor([0.5849625, 0.3219281])
         const res = pitchDistance(v)
-        expect(tensorsAlmostEqual(res, exp)).toBe(true)
+        await expectTensorsClose(res, exp)
     })    
 })
 
@@ -40,25 +39,25 @@ describe('restrictBounds', () => {
             [1, -1], [ 1, 0],
         ])
         const res = await restrictBounds(input, bounds)
-        expect(tensorsAlmostEqual(res, exp)).toBe(true)
+        await expectTensorsClose(res, exp)
     })
 })
 
 describe('spaceGraphAlteredPermutations', () => {
     it('generates permutations for each limit', async () => {
         const limits = [1, 2]
-        const exp = tf.tensor([[
+        const exp = tf.tensor([
             [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2],
             [ 0, -2], [ 0, -1], [ 0, 0], [ 0, 1], [ 0, 2],
             [ 1, -2], [ 1, -1], [ 1, 0], [ 1, 1], [ 1, 2]
-        ]])
+        ])
         const res = await spaceGraphAlteredPermutations(limits)
-        expect(tensorsAlmostEqual(res, exp)).toBe(true)
+        await expectTensorsClose(res, exp, false)
     })
 
     it('works with 3 prime dimensions', async () => {
         const limits = [1, 2, 1]
-        const exp = tf.tensor([[
+        const exp = tf.tensor([
             [-1, -2, -1], [-1, -2,  0], [-1, -2,  1], 
             [-1, -1, -1], [-1, -1,  0], [-1, -1,  1], 
             [-1,  0, -1], [-1,  0,  0], [-1,  0,  1], 
@@ -76,9 +75,9 @@ describe('spaceGraphAlteredPermutations', () => {
             [ 1,  0, -1], [ 1,  0,  0], [ 1,  0,  1], 
             [ 1,  1, -1], [ 1,  1,  0], [ 1,  1,  1], 
             [ 1,  2, -1], [ 1,  2,  0], [ 1,  2,  1]
-        ]])
+        ])
         const res = await spaceGraphAlteredPermutations(limits)
-        expect(tensorsAlmostEqual(res, exp)).toBe(true)
+        await expectTensorsClose(res, exp, false)
     })
 })
 
@@ -91,6 +90,6 @@ describe('VectorSpace', () => {
         ])
         let vs = new VectorSpace([1, 2], [-1.0, 1.0])
         await vs.init()
-        expect(tensorsAlmostEqual(vs.vectors, exp)).toBe(true)
+        await expectTensorsClose(vs.vectors, exp, false)
     })
 })

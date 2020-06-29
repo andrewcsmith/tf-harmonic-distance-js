@@ -1,7 +1,14 @@
-function tensorsAlmostEqual(res, exp, range = 1.0e-5) {
-    return res.sub(exp).abs().lessEqual(range).all().dataSync()[0] == 1
+import * as tf from "@tensorflow/tfjs-node-gpu"
+
+const expectTensorsClose = async (res: tf.Tensor, exp: tf.Tensor, close = true) => {
+    tf.test_util.expectArraysEqual(res.shape, exp.shape)
+    if (close) {
+        tf.test_util.expectArraysClose(await res.array(), await exp.array())
+    } else {
+        tf.test_util.expectArraysEqual(await res.array(), await exp.array())
+    }
 }
 
 export {
-    tensorsAlmostEqual,
+    expectTensorsClose,
 }
