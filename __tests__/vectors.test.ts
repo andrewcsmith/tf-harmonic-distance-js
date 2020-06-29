@@ -6,7 +6,9 @@ import {
     pitchDistance, 
     restrictBounds,
     spaceGraphAlteredPermutations,
+    VectorSpace,
 } from "../src/vectors"
+import { tensor } from "@tensorflow/tfjs-node-gpu"
 
 describe('pitchDistance', () => {
     it('is correct for one vec', () => {
@@ -45,18 +47,18 @@ describe('restrictBounds', () => {
 describe('spaceGraphAlteredPermutations', () => {
     it('generates permutations for each limit', async () => {
         const limits = [1, 2]
-        const exp = tf.tensor([
+        const exp = tf.tensor([[
             [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2],
             [ 0, -2], [ 0, -1], [ 0, 0], [ 0, 1], [ 0, 2],
             [ 1, -2], [ 1, -1], [ 1, 0], [ 1, 1], [ 1, 2]
-        ])
+        ]])
         const res = await spaceGraphAlteredPermutations(limits)
         expect(tensorsAlmostEqual(res, exp)).toBe(true)
     })
 
     it('works with 3 prime dimensions', async () => {
         const limits = [1, 2, 1]
-        const exp = tf.tensor([
+        const exp = tf.tensor([[
             [-1, -2, -1], [-1, -2,  0], [-1, -2,  1], 
             [-1, -1, -1], [-1, -1,  0], [-1, -1,  1], 
             [-1,  0, -1], [-1,  0,  0], [-1,  0,  1], 
@@ -74,8 +76,21 @@ describe('spaceGraphAlteredPermutations', () => {
             [ 1,  0, -1], [ 1,  0,  0], [ 1,  0,  1], 
             [ 1,  1, -1], [ 1,  1,  0], [ 1,  1,  1], 
             [ 1,  2, -1], [ 1,  2,  0], [ 1,  2,  1]
-        ])
+        ]])
         const res = await spaceGraphAlteredPermutations(limits)
         expect(tensorsAlmostEqual(res, exp)).toBe(true)
+    })
+})
+
+describe('VectorSpace', () => {
+    it('generates permutations', async () => {
+        const exp = tf.tensor([
+            [-1, 0], [-1, 1],
+            [ 0, 0],
+            [1, -1], [ 1, 0],
+        ])
+        let vs = new VectorSpace([1, 2], [-1.0, 1.0])
+        await vs.init()
+        expect(tensorsAlmostEqual(vs.vectors, exp)).toBe(true)
     })
 })

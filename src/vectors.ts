@@ -1,6 +1,7 @@
 import * as tf from "@tensorflow/tfjs-node-gpu"
 
-import { meshGrid } from "./cartesian"
+import { meshGrid, permutations } from "./cartesian"
+import { harmonicDistance, harmonicDistanceAggregate } from "./tenney"
 
 const PRIME_LIMITS = [5, 5, 3, 3, 2, 1]
 const PRIMES: tf.Tensor = tf.tensor([2, 3, 5, 7, 11, 13, 19, 23])
@@ -38,11 +39,32 @@ const spaceGraphAlteredPermutations = async (limits: number[], bounds: number[] 
 }
 
 class VectorSpace {
-    constructor(primeLimits: []) {
+    bounds: number[]
+    hds: tf.Variable
+    pds: tf.Variable
+    perms: tf.Variable
+    primeLimits: number[]
+    twoHds: tf.Tensor
+    vectors: tf.Tensor
+
+    constructor(primeLimits: number[], bounds: number[]) {
+        this.primeLimits = primeLimits
+        this.bounds = bounds
     }
 
-    getPerms(primeLimits: number[], bounds: number[] = PD_BOUNDS) {
-        const vectors = spaceGraphAlteredPermutations(primeLimits, bounds)
+    init = async () => {
+        this.perms = tf.variable(await this.getPerms(this.primeLimits, this.bounds), true)
+        this.hds = tf.variable(await harmonicDistanceAggregate(this.perms))
+        this.pds = tf.variable(pitchDistance(this.vectors))
+        this.twoHds = tf.pow(2.0, this.hds)
+    }
+
+    getPerms = async (primeLimits: number[], bounds: number[] = PD_BOUNDS, hdLimit = HD_LIMIT, dimensions = DIMS): Promise<tf.Tensor> => {
+        const vectors = await spaceGraphAlteredPermutations(primeLimits, bounds)
+        const vectorsHds = harmonicDistance(vectors)
+        const mask = tf.lessEqual(vectorsHds, tf.broadcastTo(hdLimit, vectorsHds.shape))
+        this.vectors = await tf.booleanMaskAsync(vectors, mask)
+        return permutations(this.vectors, dimensions)
     }
 }
 

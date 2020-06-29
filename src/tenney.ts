@@ -13,14 +13,13 @@ const harmonicDistance = (vecs: tf.Tensor): tf.Tensor => {
 }
 
 const harmonicDistanceAggregate = async (vecs: tf.Tensor): Promise<tf.Tensor> => {
-    const bases = await getBases(vecs.shape[0] + 1)
-    return explodedHarmonicDistance(vecs)
-        .transpose()
-        .dot(bases)
+    const bases = await getBases(vecs.shape[1] + 1)
+    const ehd = explodedHarmonicDistance(vecs)
+    return ehd.matMul(bases.expandDims(0).broadcastTo(ehd.shape), true, false)
         .abs()
-        .sum(0)
-        .sum(0)
-        .div(vecs.shape[0])
+        .sum(1)
+        .sum(1)
+        .div(vecs.shape[1])
 }
 
 export {
