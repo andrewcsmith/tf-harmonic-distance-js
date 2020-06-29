@@ -17,12 +17,24 @@ const pitchDistance = (vectors: tf.Tensor): tf.Tensor => {
     return floatRatios.log().div(tf.log([2.0]))
 }
 
-const spaceGraphAlteredPermutations = (limits: number[], bounds: number[]): tf.Tensor => {
+const restrictBounds = (vectors: tf.Tensor, bounds: number[]): Promise<tf.Tensor> => {
+    let pds = pitchDistance(vectors)
+    let mask = tf.logicalAnd(
+        tf.lessEqual(pds, bounds[1]),
+        tf.greaterEqual(pds, bounds[0])
+    )
+    return tf.booleanMaskAsync(vectors, mask)
+}
+
+const spaceGraphAlteredPermutations = async (limits: number[], bounds: number[] = undefined): Promise<tf.Tensor> => {
     const options = limits.map(i => tf.range(-i, i+1))
     let mesh = meshGrid(options)
     let vectors = tf.stack(mesh, -1)
-    vectors = vectors.reshape([-1, limits.length])
-    return tf.cast(vectors, "float32")
+    vectors = vectors.reshape([-1, limits.length]).cast('float32')
+    if (bounds) {
+        vectors = await restrictBounds(vectors, bounds)
+    }
+    return vectors
 }
 
 class VectorSpace {
@@ -37,6 +49,7 @@ class VectorSpace {
 export {
     PRIMES,
     pitchDistance,
+    restrictBounds,
     spaceGraphAlteredPermutations,
     VectorSpace,
 }

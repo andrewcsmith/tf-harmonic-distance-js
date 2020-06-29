@@ -4,6 +4,7 @@ import { tensorsAlmostEqual } from "./test_utils"
 
 import { 
     pitchDistance, 
+    restrictBounds,
     spaceGraphAlteredPermutations,
 } from "../src/vectors"
 
@@ -23,19 +24,37 @@ describe('pitchDistance', () => {
     })    
 })
 
+describe('restrictBounds', () => {
+    it('eliminates vectors that are out of bounds', async () => {
+        let input = tf.tensor([
+            [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2],
+            [ 0, -2], [ 0, -1], [ 0, 0], [ 0, 1], [ 0, 2],
+            [ 1, -2], [ 1, -1], [ 1, 0], [ 1, 1], [ 1, 2]
+        ])
+        let bounds = [-1.0, 1.0]
+        let exp = tf.tensor([
+            [-1, 0], [-1, 1],
+            [ 0, 0],
+            [1, -1], [ 1, 0],
+        ])
+        const res = await restrictBounds(input, bounds)
+        expect(tensorsAlmostEqual(res, exp)).toBe(true)
+    })
+})
+
 describe('spaceGraphAlteredPermutations', () => {
-    it('generates permutations for each limit', () => {
+    it('generates permutations for each limit', async () => {
         const limits = [1, 2]
         const exp = tf.tensor([
             [-1, -2], [-1, -1], [-1, 0], [-1, 1], [-1, 2],
             [ 0, -2], [ 0, -1], [ 0, 0], [ 0, 1], [ 0, 2],
             [ 1, -2], [ 1, -1], [ 1, 0], [ 1, 1], [ 1, 2]
         ])
-        const res = spaceGraphAlteredPermutations(limits, [-1.0, 1.0])
-        expect(res.arraySync()).toEqual(exp.arraySync())
+        const res = await spaceGraphAlteredPermutations(limits)
+        expect(tensorsAlmostEqual(res, exp)).toBe(true)
     })
 
-    it('works with 3 prime dimensions', () => {
+    it('works with 3 prime dimensions', async () => {
         const limits = [1, 2, 1]
         const exp = tf.tensor([
             [-1, -2, -1], [-1, -2,  0], [-1, -2,  1], 
@@ -56,7 +75,7 @@ describe('spaceGraphAlteredPermutations', () => {
             [ 1,  1, -1], [ 1,  1,  0], [ 1,  1,  1], 
             [ 1,  2, -1], [ 1,  2,  0], [ 1,  2,  1]
         ])
-        const res = spaceGraphAlteredPermutations(limits, [-1.0, 1.0])
-        expect(res.arraySync()).toEqual(exp.arraySync())
+        const res = await spaceGraphAlteredPermutations(limits)
+        expect(tensorsAlmostEqual(res, exp)).toBe(true)
     })
 })
