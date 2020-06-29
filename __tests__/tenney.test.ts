@@ -16,10 +16,6 @@ const UNISON_FIFTH = tf.tensor([[
     [-1, 1, 0]
 ]])
 
-async function expectInRange(res: tf.Tensor, exp: tf.Tensor, range = 1.0e-5) {
-    expect(await res.sub(exp).sum().array()).toBeLessThan(range)
-}
-
 describe('harmonicDistance', () => {
     it('evaluates one interval', async () => {
         const exp = tf.tensor([[2.584962500721156]])
