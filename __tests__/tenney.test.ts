@@ -5,8 +5,6 @@ import {
     harmonicDistance, 
     harmonicDistanceAggregate 
 } from "../src/tenney"
-import { tensor } from "@tensorflow/tfjs-node-gpu"
-import { getInputAndOutputNodeNameFromMetaGraphInfo } from "@tensorflow/tfjs-node-gpu/dist/saved_model"
 
 const FIFTH = tf.tensor([[-1, 1, 0]])
 const TRIAD = tf.tensor([[
