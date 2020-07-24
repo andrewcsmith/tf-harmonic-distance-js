@@ -1,8 +1,18 @@
-import { getBases } from "../src/utilities"
 import * as tf from "@tensorflow/tfjs-node-gpu"
 
-test('getBases gets bases', async () => {
-    const res = await getBases(3)
-    const exp = tf.tensor([[1, -0, -1], [-0, 1, 1]])
-    expect(res.arraySync()).toEqual(exp.arraySync())
-})
+import { getBases } from "../src/utilities"
+import { expectTensorsClose } from "./test_utils"
+
+describe('getBases', () => {
+    it('gets 2-combos', async () => {
+        const res = await getBases(2)
+        const exp = tf.tensor([[1]])
+        await expectTensorsClose(res, exp)
+    })
+
+    it('gets 3-combos', async () => {
+        const res = await getBases(3)
+        const exp = tf.tensor([[1, -0, -1], [-0, 1, 1]])
+        await expectTensorsClose(res, exp)
+    })
+}) 
