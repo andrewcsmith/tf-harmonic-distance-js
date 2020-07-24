@@ -12,19 +12,24 @@
         },
         {
             "type": "node-terminal",
-            "name": "Run Script: test",
+            "name": "jest all tests",
             "request": "launch",
-            "command": "npm run test",
-            "cwd": "${workspaceFolder}"
+            "command": "yarn jest",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "TF_FORCE_GPU_ALLOW_GROWTH": "true",
+                "TF_CPP_MIN_LOG_LEVEL": "2"
+            },
         },
         {
             "type": "node-terminal",
-            "name": "Test cartesian",
+            "name": "jest current file",
             "request": "launch",
-            "command": "yarn jest cartesian",
+            "command": "yarn jest -- ${fileBasenameNoExtension}",
             "cwd": "${workspaceFolder}",
             "env": {
-                "TF_FORCE_GPU_ALLOW_GROWTH": "true"
+                "TF_FORCE_GPU_ALLOW_GROWTH": "true",
+                "TF_CPP_MIN_LOG_LEVEL": "2"
             },
         }
     ]
