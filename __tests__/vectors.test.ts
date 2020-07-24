@@ -81,14 +81,48 @@ describe('spaceGraphAlteredPermutations', () => {
 })
 
 describe('VectorSpace', () => {
-    it('generates permutations', async () => {
-        const exp = tf.tensor([
-            [-1, 0], [-1, 1],
-            [ 0, 0],
-            [1, -1], [ 1, 0],
-        ])
-        let vs = new VectorSpace([1, 2], [-1.0, 1.0])
-        await vs.init()
-        await expectTensorsClose(vs.vectors, exp, false)
+    describe('for one dimension', () => {
+        let vs;
+
+        beforeAll(async () => {
+            vs = new VectorSpace([1, 2], [-1.0, 1.0])
+            await vs.init()
+        })    
+
+        it('generates vectors', async () => {
+            const exp = tf.tensor([
+                [-1, 0], [-1, 1],
+                [ 0, 0],
+                [1, -1], [ 1, 0],
+            ])
+            await expectTensorsClose(vs.vectors, exp, false)
+        })
+    
+        it('generates permutations', async () => {
+            const exp = tf.tensor([
+                [[-1, 0]], [[-1, 1]],
+                [[ 0, 0]],
+                [[1, -1]], [[ 1, 0]],
+            ])
+            await expectTensorsClose(vs.perms, exp, false)
+        })
+    
+        it('generates pds', async () => {
+            const exp = tf.tensor([
+                -1.0, 0.584962500,
+                0.0,
+                -0.584962500, 1.0
+            ])
+            await expectTensorsClose(vs.pds, exp)
+        })
+    
+        it('generates hds', async () => {
+            const exp = tf.tensor([
+                1.0, 2.584962500,
+                0.0,
+                2.584962500, 1.0
+            ])
+            await expectTensorsClose(vs.hds, exp)
+        })    
     })
 })

@@ -31,6 +31,13 @@ describe('harmonicDistance', () => {
 })
 
 describe('harmonicDistanceAggregate', () => {
+    it('evaluates FIFTH', async () => {
+        const exp = tf.tensor([2.584962500721156, 2.584962500721156])
+        const input = tf.stack([FIFTH, FIFTH], 0)
+        const res = await harmonicDistanceAggregate(input)
+        await expectTensorsClose(res, exp)
+    })
+
     it('evaluates UNISON_FIFTH', async () => {
         const exp = tf.tensor([2.584962500721156])
         const res = await harmonicDistanceAggregate(UNISON_FIFTH)
