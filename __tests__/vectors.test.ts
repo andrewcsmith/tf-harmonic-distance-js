@@ -21,7 +21,7 @@ describe('pitchDistance', () => {
         const exp = tf.tensor([0.5849625, 0.3219281])
         const res = pitchDistance(v)
         await expectTensorsClose(res, exp)
-    })    
+    })
 })
 
 describe('restrictBounds', () => {
