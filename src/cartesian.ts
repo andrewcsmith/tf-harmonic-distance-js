@@ -18,6 +18,10 @@ const meshGrid = (xi: tf.Tensor[]): tf.Tensor[] => {
 }
 
 const permutations = (a: tf.Tensor, times = 2): tf.Tensor => {
+    if (times == 1) {
+        return a.expandDims(1)
+    }
+    
     const options = tf.range(0, a.shape[0])
     const meshed = meshGrid([options, options])
     const indices = tf.stack(meshed, -1)
