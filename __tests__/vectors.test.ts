@@ -82,10 +82,10 @@ describe('spaceGraphAlteredPermutations', () => {
 
 describe('VectorSpace', () => {
     describe('for one dimension', () => {
-        let vs;
+        let vs: VectorSpace
 
         beforeAll(async () => {
-            vs = new VectorSpace([1, 2], [-1.0, 1.0])
+            vs = new VectorSpace([1, 1], [-1.0, 1.0])
             await vs.init()
         })    
 
@@ -124,5 +124,23 @@ describe('VectorSpace', () => {
             ])
             await expectTensorsClose(vs.hds, exp)
         })    
+    })
+
+    describe('for 2 dimensions', () => {
+        let vs: VectorSpace
+
+        beforeAll(async () => {
+            vs = new VectorSpace([1, 1], [-1.0, 1.0], 5.0, 2)
+            await vs.init()
+        })
+
+        it('generates vectors', async () => {
+            const exp = tf.tensor([
+                [-1, 0], [-1, 1],
+                [ 0, 0],
+                [1, -1], [ 1, 0],
+            ])
+            await expectTensorsClose(vs.vectors, exp, false)
+        })
     })
 })

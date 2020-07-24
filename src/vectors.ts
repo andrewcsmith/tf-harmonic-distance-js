@@ -40,6 +40,8 @@ const spaceGraphAlteredPermutations = async (limits: number[], bounds: number[] 
 
 class VectorSpace {
     bounds: number[]
+    dimensions: number
+    hdLimit: number
     hds: tf.Variable
     pds: tf.Variable
     perms: tf.Variable
@@ -47,13 +49,15 @@ class VectorSpace {
     twoHds: tf.Tensor
     vectors: tf.Tensor
 
-    constructor(primeLimits: number[], bounds: number[]) {
+    constructor(primeLimits: number[] = PRIME_LIMITS, bounds: number[] = PD_BOUNDS, hdLimit: number = HD_LIMIT, dimensions: number = DIMS) {
         this.primeLimits = primeLimits
         this.bounds = bounds
+        this.hdLimit = hdLimit
+        this.dimensions = dimensions
     }
 
     init = async () => {
-        this.perms = tf.variable(await this.getPerms(this.primeLimits, this.bounds), true)
+        this.perms = tf.variable(await this.getPerms(this.primeLimits, this.bounds, this.hdLimit, this.dimensions), true)
         this.hds = tf.variable(await harmonicDistanceAggregate(this.perms))
         this.pds = tf.variable(pitchDistance(this.vectors))
         this.twoHds = tf.pow(2.0, this.hds)

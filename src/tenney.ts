@@ -18,7 +18,8 @@ const harmonicDistanceAggregate = async (vecs: tf.Tensor): Promise<tf.Tensor> =>
         return ehd.abs().sum(1).sum(1)
     } else {
         const bases = (await getBases(vecs.shape[1] + 1))
-            .broadcastTo(vecs.shape)
+            .expandDims(0)
+            .tile([vecs.shape[0], 1, 1])
         return ehd
             .matMul(bases, true, false)
             .abs()
