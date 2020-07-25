@@ -10,12 +10,12 @@ const HD_LIMIT = 9.0
 const DIMS = 1
 
 const pitchDistance = (vectors: tf.Tensor): tf.Tensor => {
-    const primeSlice: tf.Tensor = PRIMES.slice(0, vectors.shape[vectors.shape.length-1])
-    const floatRatios = primeSlice
+    return PRIMES.slice(0, vectors.shape.slice(-1))
         .asType('float32')
         .pow(vectors)
-        .prod(1)
-    return floatRatios.log().div(tf.log([2.0]))
+        .prod(-1)
+        .log()
+        .div(tf.log([2.0]))
 }
 
 const restrictBounds = (vectors: tf.Tensor, bounds: number[]): Promise<tf.Tensor> => {
@@ -38,6 +38,13 @@ const spaceGraphAlteredPermutations = async (limits: number[], bounds: number[] 
     return vectors
 }
 
+interface VectorSpaceParameters {
+    primeLimits ?: number[],
+    bounds ?: number[],
+    hdLimit ?: number,
+    dimensions ?: number,
+}
+
 class VectorSpace {
     bounds: number[]
     dimensions: number
@@ -49,7 +56,12 @@ class VectorSpace {
     twoHds: tf.Tensor
     vectors: tf.Tensor
 
-    constructor(primeLimits: number[] = PRIME_LIMITS, bounds: number[] = PD_BOUNDS, hdLimit: number = HD_LIMIT, dimensions: number = DIMS) {
+    constructor({
+        primeLimits = PRIME_LIMITS, 
+        bounds = PD_BOUNDS, 
+        hdLimit = HD_LIMIT, 
+        dimensions = DIMS
+    }: VectorSpaceParameters) {
         this.primeLimits = primeLimits
         this.bounds = bounds
         this.hdLimit = hdLimit
@@ -59,7 +71,7 @@ class VectorSpace {
     init = async () => {
         this.perms = tf.variable(await this.getPerms(this.primeLimits, this.bounds, this.hdLimit, this.dimensions), true)
         this.hds = tf.variable(await harmonicDistanceAggregate(this.perms))
-        this.pds = tf.variable(pitchDistance(this.vectors))
+        this.pds = tf.variable(pitchDistance(this.perms))
         this.twoHds = tf.pow(2.0, this.hds)
     }
 
