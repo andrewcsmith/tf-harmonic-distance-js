@@ -31,6 +31,17 @@
                 "TF_FORCE_GPU_ALLOW_GROWTH": "true",
                 "TF_CPP_MIN_LOG_LEVEL": "2"
             },
+        },
+        {
+            "type": "node-terminal",
+            "name": "jest current selection in file",
+            "request": "launch",
+            "command": "yarn jest -- ${fileBasenameNoExtension} -t '${selectedText}'",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "TF_FORCE_GPU_ALLOW_GROWTH": "true",
+                "TF_CPP_MIN_LOG_LEVEL": "2"
+            },
         }
     ]
 }
