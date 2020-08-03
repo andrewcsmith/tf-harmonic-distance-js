@@ -19,6 +19,7 @@ const parabolicLossFunction = (pds: tf.Tensor, hds: tf.Tensor, logPitches: tf.Te
 }
 
 interface MinimizerParameters {
+    callback?: () => Promise<void>,
     dimensions?: number,
     learningRate?: number,
     maxIters?: number,
@@ -29,6 +30,7 @@ interface MinimizerParameters {
 }
 
 class Minimizer {
+    callback: () => Promise<void>
     convergenceThreshold: tf.Scalar
     curves: tf.Tensor
     logPitches: tf.Variable
@@ -38,6 +40,7 @@ class Minimizer {
     vs: VectorSpace
 
     constructor({
+        callback = async () => {},
         dimensions = 1,
         learningRate = 1e-2,
         maxIters = 1e3,
@@ -46,6 +49,7 @@ class Minimizer {
         batchSize = 1,
         primeLimits = PRIME_LIMITS,
     }: MinimizerParameters) {
+        this.callback = callback
         this.convergenceThreshold = tf.scalar(convergenceThreshold)
         this.curves = tf.fill([dimensions], c)
         this.logPitches = tf.variable(tf.zeros([batchSize, dimensions], "float32"), true, `logPitches-${batchSize}x${dimensions}`)
@@ -65,6 +69,7 @@ class Minimizer {
         while (await this.stoppingOp().logicalAnd(this.step.less(this.maxIters)).array()) {
             this.opt.minimize(this.loss, false, [this.logPitches])
             this.step.assign(this.step.add(1).toInt())
+            await this.callback()
         }
     }
 
