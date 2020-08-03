@@ -67,10 +67,15 @@ class Minimizer {
         await this.reinitializeWeights()
         this.opt.minimize(this.loss, false, [this.logPitches])
         while (await this.stoppingOp().logicalAnd(this.step.less(this.maxIters)).array()) {
-            this.opt.minimize(this.loss, false, [this.logPitches])
-            this.step.assign(this.step.add(1).toInt())
-            await this.callback()
+            await this.takeStep()
         }
+    }
+
+    takeStep = async () => {
+        this.opt.minimize(this.loss, false, [this.logPitches])
+        this.step.assign(this.step.add(1).toInt())
+        await this.callback()
+    }
     }
 
     loss = (): tf.Scalar => {
