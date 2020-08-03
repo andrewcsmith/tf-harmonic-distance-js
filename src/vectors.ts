@@ -86,6 +86,7 @@ class VectorSpace {
 
 export {
     PRIMES,
+    PRIME_LIMITS,
     pitchDistance,
     restrictBounds,
     spaceGraphAlteredPermutations,

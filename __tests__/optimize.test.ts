@@ -2,7 +2,8 @@ import * as tf from "@tensorflow/tfjs-node-gpu"
 import { expectTensorsClose } from "./test_utils"
 
 import {
-    parabolicLossFunction
+    parabolicLossFunction,
+    Minimizer,
 } from "../src/optimize"
 import { VectorSpace } from "../src/vectors";
 
@@ -50,5 +51,35 @@ describe('parabolicLossFunction', () => {
             const res = parabolicLossFunction(vs.pds, vs.hds, logPitches, curves)
             await expectTensorsClose(res, exp)
         })
+    })
+})
+
+describe('Minimizer', () => {
+    it('gets 1d minimum', async () => {
+        let minimizer = new Minimizer({
+            dimensions: 1,
+            convergenceThreshold: 1e-4,
+            primeLimits: [2, 1, 1],
+        })
+        await minimizer.vs.init()
+        minimizer.logPitches.assign(tf.tensor([[4.0/12.0]]))
+        const exp = tf.tensor([[0.32192809]])
+        await minimizer.minimize()
+        let res = minimizer.logPitches
+        await expectTensorsClose(res, exp)
+    })
+
+    it('gets 2d minimum', async () => {
+        let minimizer = new Minimizer({
+            dimensions: 2,
+            convergenceThreshold: 1e-4,
+            primeLimits: [2, 1, 1],
+        })
+        await minimizer.vs.init()
+        minimizer.logPitches.assign(tf.tensor([[4.0 / 12.0, 7.0 / 12.0]]))
+        const exp = tf.tensor([[0.32192809488736235, 0.5849625007211562]])
+        await minimizer.minimize()
+        let res = minimizer.logPitches
+        await expectTensorsClose(res, exp)
     })
 })
