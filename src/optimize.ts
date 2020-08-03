@@ -1,7 +1,6 @@
 import * as tf from "@tensorflow/tfjs-node-gpu"
 
 import { PRIME_LIMITS, VectorSpace } from "./vectors"
-import { all } from "@tensorflow/tfjs-node-gpu"
 
 const parabolicLossFunction = (pds: tf.Tensor, hds: tf.Tensor, logPitches: tf.Tensor, curves: tf.Tensor = undefined) => {
     const twoHds = tf.pow(2.0, hds).expandDims(-1)
@@ -76,6 +75,10 @@ class Minimizer {
 
     reinitializeWeights = async () => {
         let weights = await this.opt.getWeights()
+        for (let weight of weights.slice(1)) {
+            weight.tensor.print()
+            weight.tensor = tf.zerosLike(weight.tensor)
+        }
         await this.opt.setWeights(weights)
     }
 
