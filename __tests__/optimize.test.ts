@@ -55,31 +55,66 @@ describe('parabolicLossFunction', () => {
 })
 
 describe('Minimizer', () => {
-    it('gets 1d minimum', async () => {
-        let minimizer = new Minimizer({
-            dimensions: 1,
-            convergenceThreshold: 1e-4,
-            primeLimits: [2, 1, 1],
+    describe('with one dimension', () => {
+        let minimizer: Minimizer
+
+        beforeAll(async () => {
+            minimizer = new Minimizer({
+                dimensions: 1,
+                convergenceThreshold: 1e-4,
+                primeLimits: [2, 1, 1],
+            })
+            await minimizer.vs.init()
         })
-        await minimizer.vs.init()
-        minimizer.logPitches.assign(tf.tensor([[4.0/12.0]]))
-        const exp = tf.tensor([[0.32192809]])
-        await minimizer.minimize()
-        let res = minimizer.logPitches
-        await expectTensorsClose(res, exp)
+
+        it('gets 1d minimum', async () => {
+            minimizer.logPitches.assign(tf.tensor([[4.0/12.0]]))
+            const exp = tf.tensor([[0.32192809]])
+            await minimizer.minimize()
+            let res = minimizer.logPitches
+            await expectTensorsClose(res, exp)
+        })
+
+        it('repeatedly gets correct pitches', async () => {
+            minimizer.logPitches.assign(tf.tensor([[4.0/12.0]]))
+            let exp = tf.tensor([[0.32192809]])
+            await minimizer.minimize()
+            let res = minimizer.logPitches
+            await expectTensorsClose(res, exp)
+            minimizer.logPitches.assign(tf.tensor([[7.0 / 12.0]]))
+            exp = tf.tensor([[0.5849625007211562]])
+            await minimizer.minimize()
+            res = minimizer.logPitches
+            await expectTensorsClose(res, exp)
+        })
+
+        it('does a callback good', async () => {
+            minimizer.callback = async function() {
+                minimizer.logPitches.print()
+            }
+            minimizer.logPitches.assign(tf.tensor([[4.0 / 12.0]]))
+            minimizer.minimize()
+        })
     })
 
-    it('gets 2d minimum', async () => {
-        let minimizer = new Minimizer({
-            dimensions: 2,
-            convergenceThreshold: 1e-4,
-            primeLimits: [2, 1, 1],
+    describe('with two dimensions', () => {
+        let minimizer: Minimizer
+
+        beforeAll(async () => {
+            minimizer = new Minimizer({
+                dimensions: 2,
+                convergenceThreshold: 1e-4,
+                primeLimits: [2, 1, 1],
+            })
+            await minimizer.vs.init()
         })
-        await minimizer.vs.init()
-        minimizer.logPitches.assign(tf.tensor([[4.0 / 12.0, 7.0 / 12.0]]))
-        const exp = tf.tensor([[0.32192809488736235, 0.5849625007211562]])
-        await minimizer.minimize()
-        let res = minimizer.logPitches
-        await expectTensorsClose(res, exp)
+
+        it('gets 2d minimum', async () => {
+            minimizer.logPitches.assign(tf.tensor([[4.0 / 12.0, 7.0 / 12.0]]))
+            const exp = tf.tensor([[0.32192809488736235, 0.5849625007211562]])
+            await minimizer.minimize()
+            let res = minimizer.logPitches
+            await expectTensorsClose(res, exp)
+        })
     })
 })
