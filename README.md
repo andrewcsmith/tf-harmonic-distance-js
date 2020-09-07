@@ -12,3 +12,16 @@ Make sure to set the proper environment variable, given here for PowerShell.
 ```
 $Env:TF_FORCE_GPU_ALLOW_GROWTH = "true"
 ```
+
+## Building it
+
+Assumes you have a typescript compiler installed, as this will run tsc
+
+```
+# Install nodejs and npm on whatever's right for your system
+sudo apt install nodejs npm
+# Install all the packages
+yarn install
+# Build the typescript files to dist/
+yarn build
+```
