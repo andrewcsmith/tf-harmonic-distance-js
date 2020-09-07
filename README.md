@@ -20,6 +20,8 @@ Assumes you have a typescript compiler installed, as this will run tsc
 ```
 # Install nodejs and npm on whatever's right for your system
 sudo apt install nodejs npm
+# Install yarn for packaging
+sudo npm install -g yarn
 # Install all the packages
 yarn install
 # Build the typescript files to dist/
