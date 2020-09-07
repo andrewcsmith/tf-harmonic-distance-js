@@ -88,6 +88,7 @@ export {
     PRIMES,
     PRIME_LIMITS,
     PD_BOUNDS,
+    HD_LIMIT,
     pitchDistance,
     restrictBounds,
     spaceGraphAlteredPermutations,

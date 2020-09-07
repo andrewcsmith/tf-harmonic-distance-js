@@ -1,6 +1,6 @@
 import * as tf from "@tensorflow/tfjs-node-gpu"
 
-import { PRIME_LIMITS, PD_BOUNDS, VectorSpace } from "./vectors"
+import { HD_LIMIT, PRIME_LIMITS, PD_BOUNDS, VectorSpace } from "./vectors"
 
 const parabolicLossFunction = (pds: tf.Tensor, hds: tf.Tensor, logPitches: tf.Tensor, curves: tf.Tensor = undefined) => {
     const twoHds = tf.pow(2.0, hds).expandDims(-1)
@@ -28,6 +28,7 @@ interface MinimizerParameters {
     batchSize?: number,
     bounds?: number[],
     primeLimits?: number[],
+    hdLimit?: number,
 }
 
 class Minimizer {
@@ -50,6 +51,7 @@ class Minimizer {
         batchSize = 1,
         bounds = PD_BOUNDS,
         primeLimits = PRIME_LIMITS,
+        hdLimit = HD_LIMIT,
     }: MinimizerParameters) {
         this.callback = callback
         this.convergenceThreshold = tf.scalar(convergenceThreshold)
@@ -60,6 +62,7 @@ class Minimizer {
         this.step = tf.variable(tf.scalar(0), false, undefined, "int32")
         this.vs = new VectorSpace({
             primeLimits,
+            hdLimit,
             dimensions,
         })
     }
