@@ -23,7 +23,7 @@ const permutations = (a: tf.Tensor, times = 2): tf.Tensor => {
     }
     
     const options = tf.range(0, a.shape[0])
-    const meshed = meshGrid([options, options])
+    const meshed = meshGrid((new Array(times)).fill(options))
     const indices = tf.stack(meshed, -1)
         .reshape([-1, times])
         .cast("int32")

@@ -8,6 +8,9 @@
         "src/cartesian.ts",
         "src/tenney.ts",
         "src/utilities.ts",
-        "src/vectors.ts"
-    ]
+        "src/vectors.ts",
+        "src/optimize.ts",
+    ],
+    "declaration": true,
+    "target": "ES5",
 }

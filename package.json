@@ -1,9 +1,9 @@
 {
   "name": "hd-js",
   "version": "1.0.0",
-  "main": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
-  "type": "module",
   "dependencies": {
     "@tensorflow/tfjs-node-gpu": "^2.0.1",
     "@types/jest": "^25.2.3",
@@ -29,6 +29,7 @@
     "@types/webgl2": "0.0.4"
   },
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "build": "tsc -t \"ES5\" --outDir dist"
   }
 }

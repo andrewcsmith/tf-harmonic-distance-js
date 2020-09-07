@@ -1,7 +1,14 @@
+import { Minimizer } from "./src/optimize"
 import { getBases } from "./src/utilities"
-import { pitchDistance } from "./src/vectors"
+import { 
+    pitchDistance, 
+    VectorSpace,
+} from "./src/vectors"
+
 
 export {
     getBases,
-    pitchDistance
+    pitchDistance,
+    VectorSpace,
+    Minimizer,
 }

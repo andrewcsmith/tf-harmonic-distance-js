@@ -1,6 +1,6 @@
 import * as tf from "@tensorflow/tfjs-node-gpu"
 
-import { PRIME_LIMITS, VectorSpace } from "./vectors"
+import { PRIME_LIMITS, PD_BOUNDS, VectorSpace } from "./vectors"
 
 const parabolicLossFunction = (pds: tf.Tensor, hds: tf.Tensor, logPitches: tf.Tensor, curves: tf.Tensor = undefined) => {
     const twoHds = tf.pow(2.0, hds).expandDims(-1)
@@ -26,6 +26,7 @@ interface MinimizerParameters {
     convergenceThreshold ?: number,
     c?: number,
     batchSize?: number,
+    bounds?: number[],
     primeLimits?: number[],
 }
 
@@ -47,14 +48,15 @@ class Minimizer {
         convergenceThreshold = 1e-5,
         c = 1e-2,
         batchSize = 1,
+        bounds = PD_BOUNDS,
         primeLimits = PRIME_LIMITS,
     }: MinimizerParameters) {
         this.callback = callback
         this.convergenceThreshold = tf.scalar(convergenceThreshold)
-        this.curves = tf.fill([dimensions], c)
+        this.curves = tf.variable(tf.fill([dimensions], c), false)
         this.logPitches = tf.variable(tf.zeros([batchSize, dimensions], "float32"), true, `logPitches-${batchSize}x${dimensions}`)
         this.maxIters = tf.scalar(maxIters)
-        this.opt = tf.train.adagrad(learningRate)
+        this.opt = tf.train.adam(learningRate)
         this.step = tf.variable(tf.scalar(0), false, undefined, "int32")
         this.vs = new VectorSpace({
             primeLimits,
@@ -76,7 +78,6 @@ class Minimizer {
         this.step.assign(this.step.add(1).toInt())
         await this.callback()
     }
-    }
 
     loss = (): tf.Scalar => {
         const loss = parabolicLossFunction(this.vs.pds, this.vs.hds, this.logPitches, this.curves)
@@ -86,7 +87,6 @@ class Minimizer {
     reinitializeWeights = async () => {
         let weights = await this.opt.getWeights()
         for (let weight of weights.slice(1)) {
-            weight.tensor.print()
             weight.tensor = tf.zerosLike(weight.tensor)
         }
         await this.opt.setWeights(weights)
