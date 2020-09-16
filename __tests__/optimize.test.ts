@@ -127,15 +127,14 @@ describe('Minimizer', () => {
             minimizer = new Minimizer({
                 dimensions: 3,
                 convergenceThreshold: 1e-5,
-                maxIters: 1e4,
-                primeLimits: [4, 3, 3, 2],
+                primeLimits: [3, 2, 1, 1],
             })
             await minimizer.vs.init()
         })
 
         it('gets 3d minimum', async () => {
-            minimizer.logPitches.assign(tf.tensor([[4.0 / 12.0, 7.0 / 12.0, 9.0 / 12.0]]))
-            const exp = tf.tensor([[0.32192809488736235, 0.5849625007211562, 1.0]])
+            minimizer.logPitches.assign(tf.tensor([[4.0 / 12.0, 7.0 / 12.0, 7.0 / 12.0]]))
+            const exp = tf.tensor([[0.32192809488736235, 0.5849625007211562, 0.5849625007211562]])
             await minimizer.minimize()
             let res = minimizer.logPitches
             await expectTensorsClose(res, exp)
