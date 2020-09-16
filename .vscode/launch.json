@@ -1,6 +1,7 @@
 {
     "version": "0.2.0",
     "configurations": [
+    
         {
             "type": "node",
             "request": "attach",
@@ -9,6 +10,17 @@
             "port": 9229,
             "localRoot": "${workspaceFolder}",
             "remoteRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "node-terminal",
+            "name": "stress test",
+            "request": "launch",
+            "command": "node stress-test.js",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "TF_FORCE_GPU_ALLOW_GROWTH": "true",
+                "TF_CPP_MIN_LOG_LEVEL": "2"
+            },
         },
         {
             "type": "node-terminal",
