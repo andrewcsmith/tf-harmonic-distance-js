@@ -34,7 +34,8 @@ interface MinimizerParameters {
 class Minimizer {
     callback: () => Promise<void>
     convergenceThreshold: tf.Scalar
-    curves: tf.Tensor
+    curves: tf.Variable
+    dimensions: number
     logPitches: tf.Variable
     maxIters: tf.Scalar
     opt: tf.Optimizer
@@ -56,12 +57,14 @@ class Minimizer {
         this.callback = callback
         this.convergenceThreshold = tf.scalar(convergenceThreshold)
         this.curves = tf.variable(tf.fill([dimensions], c), false)
+        this.dimensions = dimensions
         this.logPitches = tf.variable(tf.zeros([batchSize, dimensions], "float32"), true, `logPitches-${batchSize}x${dimensions}`)
         this.maxIters = tf.scalar(maxIters)
         this.opt = tf.train.adam(learningRate)
         this.step = tf.variable(tf.scalar(0), false, undefined, "int32")
         this.vs = new VectorSpace({
             primeLimits,
+            bounds,
             hdLimit,
             dimensions,
         })
@@ -85,6 +88,10 @@ class Minimizer {
     loss = (): tf.Scalar => {
         const loss = parabolicLossFunction(this.vs.pds, this.vs.hds, this.logPitches, this.curves)
         return loss.sum(0)
+    }
+
+    setC = async (c) => {
+        this.curves.assign(tf.fill([this.dimensions], c))
     }
 
     reinitializeWeights = async () => {

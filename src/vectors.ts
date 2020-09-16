@@ -32,7 +32,7 @@ const spaceGraphAlteredPermutations = async (limits: number[], bounds: number[] 
     let mesh = meshGrid(options)
     let vectors = tf.stack(mesh, -1)
     vectors = vectors.reshape([-1, limits.length]).cast('float32')
-    if (bounds) {
+    if (bounds !== undefined) {
         vectors = await restrictBounds(vectors, bounds)
     }
     return vectors
