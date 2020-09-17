@@ -2,7 +2,8 @@ import * as tf from "@tensorflow/tfjs-node-gpu"
 
 import { 
     getBases,
-    transformToUnitCircle
+    transformToUnitCircle,
+    inverseTransformToUnitCircle,
 } from "../src/utilities"
 
 import { expectTensorsClose } from "./test_utils"
@@ -24,8 +25,23 @@ describe('getBases', () => {
 describe('transformToUnitCircle', () => {
     const SQRT_OF_HALF = Math.sqrt(0.5)
 
-    it('properly transforms', async () => {
-        const pds = [
+    it('properly transforms a 1d space', async () => {
+        const pds = tf.tensor([
+            [0.0],
+            [1.0],
+            [0.5],
+        ])
+        const exp = [
+            [0.0],
+            [1.0],
+            [0.5],
+        ]
+        const res = await transformToUnitCircle(pds)
+        await expectTensorsClose(res, tf.tensor(exp))
+    })
+
+    it('properly transforms a 2d space', async () => {
+        const pds = tf.tensor([
             [0.0, 0.0],
             [1.0, 1.0],
             [0.0, 1.0],
@@ -33,7 +49,7 @@ describe('transformToUnitCircle', () => {
             [0.5, 0.5],
             [0.5, 0.0],
             [0.0, 0.5]
-        ]
+        ])
         const exp = [
             [0.0, 0.0],
             [SQRT_OF_HALF, SQRT_OF_HALF],
@@ -45,5 +61,47 @@ describe('transformToUnitCircle', () => {
         ]
         const res = await transformToUnitCircle(pds)
         await expectTensorsClose(res, tf.tensor(exp))
+    })
+})
+
+describe('inverseTransformToUnitCircle', () => {
+    const SQRT_OF_HALF = Math.sqrt(0.5)
+
+    it('properly transforms a 1d space', async () => {
+        const pds = tf.tensor([
+            [0.0],
+            [1.0],
+            [0.5],
+        ])
+        const exp = tf.tensor([
+            [0.0],
+            [1.0],
+            [0.5],
+        ])
+        const res = await inverseTransformToUnitCircle(pds)
+        await expectTensorsClose(res, exp)
+    })
+
+    it('properly transforms a 2d space', async () => {
+        const pds = tf.tensor([
+            [0.0, 0.0],
+            [SQRT_OF_HALF, SQRT_OF_HALF],
+            [0.0, 1.0], 
+            [1.0, 0.0],
+            [SQRT_OF_HALF*0.5, SQRT_OF_HALF*0.5],
+            [0.5, 0.0],
+            [0.0, 0.5]
+        ])
+        const exp = tf.tensor([
+            [0.0, 0.0],
+            [1.0, 1.0],
+            [0.0, 1.0],
+            [1.0, 0.0],
+            [0.5, 0.5],
+            [0.5, 0.0],
+            [0.0, 0.5]
+        ])
+        const res = await inverseTransformToUnitCircle(pds)
+        await expectTensorsClose(res, exp)
     })
 })
