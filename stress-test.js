@@ -9,7 +9,7 @@ const callback = async function() {
 let minimizer = new hdjs.Minimizer({
   primeLimits: [19, 12, 2, 2, 1, 1],
   dimensions: 3,
-  bounds: [0.0, 2.0],
+  bounds: [-4.0, 4.0],
   hdLimit: 9.0,
   callback: callback,
 })
