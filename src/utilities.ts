@@ -12,11 +12,11 @@ const getBases = async (length: number): Promise<tf.Tensor> => {
     return combos.slice([1, 0]).mul(-1)
 }
 
-const transformToUnitCircle = async (xys) => {
+const transformToUnitCircle = (xys) => {
     let [xs, ys] = tf.unstack(xys, 1)
     if (!ys) { return xys }
     let theta = tf.atan(ys.div(xs));
-    theta = await tf.where(theta.isFinite(), theta, tf.zerosLike(theta))
+    theta = tf.where(theta.isFinite(), theta, tf.zerosLike(theta))
     let r = tf.sum(tf.square(xys), 1).sqrt()
     let polar_xs = xs.mul(theta.cos())
     let polar_ys = ys.mul(theta.sin())
@@ -29,11 +29,11 @@ const transformToUnitCircle = async (xys) => {
     return tf.stack([new_x, new_y], 1)
 }
 
-const inverseTransformToUnitCircle = async (xys) => {
+const inverseTransformToUnitCircle = (xys) => {
     let [xs, ys] = tf.unstack(xys, 1)
     if (!ys) { return xys }
     let theta = tf.atan(ys.div(xs));
-    theta = await tf.where(theta.isFinite(), theta, tf.zerosLike(theta))
+    theta = tf.where(theta.isFinite(), theta, tf.zerosLike(theta))
     let polar_xs = xs.div(theta.cos())
     let polar_ys = ys.div(theta.sin())
     let polar_xys = tf.stack([polar_xs, polar_ys], 1)

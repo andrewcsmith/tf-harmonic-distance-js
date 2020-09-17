@@ -59,7 +59,7 @@ describe('transformToUnitCircle', () => {
             [0.5, 0.0],
             [0.0, 0.5]
         ]
-        const res = await transformToUnitCircle(pds)
+        const res = transformToUnitCircle(pds)
         await expectTensorsClose(res, tf.tensor(exp))
     })
 })
@@ -78,7 +78,7 @@ describe('inverseTransformToUnitCircle', () => {
             [1.0],
             [0.5],
         ])
-        const res = await inverseTransformToUnitCircle(pds)
+        const res = inverseTransformToUnitCircle(pds)
         await expectTensorsClose(res, exp)
     })
 
