@@ -37,7 +37,7 @@ const inverseTransformToUnitCircle = async (xys) => {
     let polar_xs = xs.div(theta.cos())
     let polar_ys = ys.div(theta.sin())
     let polar_xys = tf.stack([polar_xs, polar_ys], 1)
-    return await tf.where(polar_xys.isFinite(), polar_xys, tf.zerosLike(polar_xys))
+    return tf.where(polar_xys.isFinite(), polar_xys, tf.zerosLike(polar_xys))
 }
 
 export { 
