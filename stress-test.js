@@ -1,5 +1,5 @@
 const hdjs = require('hd-js')
-const tf = require('@tensorflow/tfjs-node-gpu')
+const tf = require('@tensorflow/tfjs-node')
 
 const callback = async function() {
   let pitches = await minimizer.logPitches.array()
