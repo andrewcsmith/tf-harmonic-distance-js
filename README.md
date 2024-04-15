@@ -8,12 +8,13 @@ rationalization algorithms on `npm`, for use in Max 8 and possibly the browser.
 
 ## Running on Windows 10
 
-Make sure to set the proper environment variable, given here for PowerShell.
+Make sure to set the proper environment variable, given here for PowerShell, and
+also to stop the annoying log messages.
 
 ```
 $Env:TF_FORCE_GPU_ALLOW_GROWTH = "true"
+$Env:TF_CPP_MIN_LOG_LEVEL = 5
 ```
-
 ## Building it
 
 Assumes you have a typescript compiler installed, as this will run tsc

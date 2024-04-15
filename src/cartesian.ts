@@ -1,4 +1,4 @@
-import * as tf from "@tensorflow/tfjs-node-gpu"
+import * as tf from "@tensorflow/tfjs-node"
 
 const meshGrid = (xi: tf.Tensor[]): tf.Tensor[] => {
     const ndim = xi.length

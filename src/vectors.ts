@@ -1,4 +1,4 @@
-import * as tf from "@tensorflow/tfjs-node-gpu"
+import * as tf from "@tensorflow/tfjs-node"
 
 import { meshGrid, permutations } from "./cartesian"
 import { harmonicDistance, harmonicDistanceAggregate } from "./tenney"

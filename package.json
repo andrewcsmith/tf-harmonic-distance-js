@@ -5,7 +5,7 @@
   "types": "dist/index.d.ts",
   "license": "MIT",
   "dependencies": {
-    "@tensorflow/tfjs-node-gpu": "^2.0.1",
+    "@tensorflow/tfjs-node": "3.18.0",
     "@types/jest": "^25.2.3",
     "combinations": "^1.0.0",
     "esm": "^3.2.25",
@@ -26,7 +26,7 @@
     "typescript": "^3.9.5"
   },
   "resolutions": {
-    "@types/webgl2": "0.0.4"
+    "@types/webgl2": "0.0.6"
   },
   "scripts": {
     "test": "jest",

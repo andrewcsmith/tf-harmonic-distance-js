@@ -1,4 +1,4 @@
-import * as tf from "@tensorflow/tfjs-node-gpu"
+import * as tf from "@tensorflow/tfjs-node"
 
 import { HD_LIMIT, PRIME_LIMITS, PD_BOUNDS, VectorSpace } from "./vectors"
 
@@ -60,7 +60,7 @@ class Minimizer {
         this.dimensions = dimensions
         this.logPitches = tf.variable(tf.zeros([batchSize, dimensions], "float32"), true, `logPitches-${batchSize}x${dimensions}`)
         this.maxIters = tf.scalar(maxIters)
-        this.opt = tf.train.adam(learningRate)
+        this.opt = tf.train.adagrad(learningRate)
         this.step = tf.variable(tf.scalar(0), false, undefined, "int32")
         this.vs = new VectorSpace({
             primeLimits,

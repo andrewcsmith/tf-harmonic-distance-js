@@ -1,4 +1,4 @@
-import * as tf from "@tensorflow/tfjs-node-gpu"
+import * as tf from "@tensorflow/tfjs-node"
 import combinations from "combinations"
 
 const combinatorialContour = (vec: Array<number>) => {
