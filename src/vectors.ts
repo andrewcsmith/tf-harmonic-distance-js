@@ -69,7 +69,8 @@ class VectorSpace {
     }
 
     init = async () => {
-        this.perms = tf.variable(await this.getPerms(this.primeLimits, this.bounds, this.hdLimit, this.dimensions), true)
+        const permsVec = await this.getPerms(this.primeLimits, this.bounds, this.hdLimit, this.dimensions)
+        this.perms = tf.variable(permsVec, true)
         this.hds = tf.variable(await harmonicDistanceAggregate(this.perms))
         this.pds = tf.variable(pitchDistance(this.perms))
         this.twoHds = tf.pow(2.0, this.hds)
